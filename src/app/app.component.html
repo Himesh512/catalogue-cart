@@ -52,6 +52,7 @@
                                         <mat-icon>remove</mat-icon>
                                     </button>
                                 </div>
+                                <button mat-button (click)="ProductCompareModel()">Open dialog</button>
                                 <button mat-raised color="primary" *ngIf="item?.selectedQty == 0 && item?.selectedQty < item?.limitPurchaseQty" [title]="'Add to cart'" mat-flat-button (click)="addToCart(item)">Add to cart
                                     🛒</button>
                             </mat-card-actions>

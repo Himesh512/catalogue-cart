@@ -1,0 +1,7 @@
+.product-container.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 20px;
+    height: 77vh;
+}

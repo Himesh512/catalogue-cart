@@ -3,7 +3,8 @@ import { CommonService } from './Shared/services/common.service';
 import { JsonPipe } from '@angular/common';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
-
+import { CompareProductComponent } from './Shared/components/compare-product/compare-product.component';
+import { MatDialog } from '@angular/material/dialog';
 @Component({
 	selector: 'app-root',
 	templateUrl: './app.component.html',
@@ -26,7 +27,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
 	constructor(
 		private commonService: CommonService,
-		private _snackBar: MatSnackBar
+		private _snackBar: MatSnackBar,
+		public dialog: MatDialog
 	) {
 		this.commonService.getDummyData();
 	}
@@ -101,5 +103,17 @@ export class AppComponent implements OnInit, OnDestroy {
 
 	isFewQtyLeft(cartItem: any) {
 		return this.commonService.isFewQtyLeft(cartItem);
+	}
+
+	public ProductCompareModel() {
+		const dialogRef = this.dialog.open(CompareProductComponent, {
+			data: {
+				productList: this.productList
+			}
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			console.log(`Dialog result: ${result}`);
+		});
 	}
 }
