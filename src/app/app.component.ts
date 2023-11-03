@@ -65,7 +65,7 @@ export class AppComponent implements OnInit, OnDestroy {
 	}
 
 	public getListView() {
-		this.listView = JSON.parse(localStorage.getItem('ListView') || 'false');
+		this.listView = JSON.parse(localStorage.getItem('ListView') || '"list"');
 		this.toggleItemView(this.listView);
 	}
 
