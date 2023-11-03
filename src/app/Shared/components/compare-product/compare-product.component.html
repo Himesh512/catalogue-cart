@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Compare Product</h2>
+<h2 mat-dialog-title color="accent">Compare Product</h2>
 <mat-dialog-content class="mat-typography">
     <ng-container *ngIf="!isComparing && cloneProductList && cloneProductList.length > 0">
         <ng-container *ngFor="let product of cloneProductList">
@@ -12,6 +12,23 @@
 
     <ng-container *ngIf="isComparing && productCompareList && productCompareList.length > 0">
         <div class="product-container grid">
+            <div class="card-wrapper compare-param">
+                <mat-card appearance="outlined" class="prod-card">
+                    <mat-card-header>
+                        <mat-card-title [title]="'Name'">Product Name</mat-card-title>
+                    </mat-card-header>
+                    <img class="prod-image" [src]="" height="150px" [title]="'image'">
+                    <mat-card-content class="compare-card-content">
+                        <p [title]="'Description'" class="description">Description</p>
+                        <p [title]="'Price'" class="price">Price</p>
+                        <p [title]="'Discount'" class="discountPercentage">Discount in %</p>
+                        <p [title]="'Brand'" class="brand">Brand</p>
+                        <p [title]="'Category'" class="category">Category</p>
+                        <p [title]="'Rating'" class="rating">Rating</p>
+                    </mat-card-content>
+                    <mat-divider></mat-divider>
+                </mat-card>
+            </div>
             <ng-container *ngFor="let product of productCompareList">
                 <div class="card-wrapper">
                     <mat-card appearance="outlined" class="prod-card">
@@ -19,9 +36,13 @@
                             <mat-card-title [title]="product?.title">{{product?.title}}</mat-card-title>
                         </mat-card-header>
                         <img class="prod-image" [src]="product?.thumbnail" height="150px" [title]="product?.title">
-                        <mat-card-content>
+                        <mat-card-content class="compare-card-content">
                             <p [title]="product?.description" class="description">{{product?.description}}</p>
                             <p [title]="product?.price | currency" class="price">{{product?.price | currency }}</p>
+                            <p [title]="product?.discountPercentage + '%'" class="discountPercentage">{{product?.price}} %</p>
+                            <p [title]="product?.brand" class="brand">{{product?.brand}}</p>
+                            <p [title]="product?.category" class="category">{{product?.category}}</p>
+                            <p [title]="product?.rating" class="rating">{{product?.rating}}</p>
                         </mat-card-content>
                         <mat-divider></mat-divider>
                     </mat-card>

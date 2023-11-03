@@ -105,7 +105,7 @@ export class AppComponent implements OnInit, OnDestroy {
 		return this.commonService.isFewQtyLeft(cartItem);
 	}
 
-	public ProductCompareModel() {
+	productCompareModel() {
 		const dialogRef = this.dialog.open(CompareProductComponent, {
 			data: {
 				productList: this.productList

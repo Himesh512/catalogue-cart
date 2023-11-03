@@ -38,6 +38,7 @@
                             <mat-card-content>
                                 <p [title]="item?.description" class="description">{{item?.description}}</p>
                                 <p [title]="item?.price | currency" class="price">{{item?.price | currency }}</p>
+                                <mat-icon class="compare-icon" (click)="productCompareModel()">compare</mat-icon>
                                 <div class="few-qty-in-stock" *ngIf="isFewQtyLeft(item)">Only few quantity left, Hurry up.</div>
                             </mat-card-content>
                             <mat-divider></mat-divider>
@@ -51,8 +52,7 @@
                                     <button mat-icon-button (click)="reduceItemInCart(item)">
                                         <mat-icon>remove</mat-icon>
                                     </button>
-                                </div>
-                                <button mat-button (click)="ProductCompareModel()">Open dialog</button>
+                                </div>                               
                                 <button mat-raised color="primary" *ngIf="item?.selectedQty == 0 && item?.selectedQty < item?.limitPurchaseQty" [title]="'Add to cart'" mat-flat-button (click)="addToCart(item)">Add to cart
                                     🛒</button>
                             </mat-card-actions>
@@ -73,6 +73,7 @@
                             <mat-card-content>
                                 <p class="description">{{item?.description}}</p>
                                 <p class="price">{{item?.price | currency }}</p>
+                                <mat-icon class="compare-icon" (click)="productCompareModel()">compare</mat-icon>
                                 <div class="few-qty-in-stock" *ngIf="isFewQtyLeft(item)">Only few quantity left, Hurry up.</div>
                             </mat-card-content>
                             <mat-card-actions>
