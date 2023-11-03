@@ -1,0 +1,142 @@
+<ng-container>
+    <mat-toolbar color="primary">
+        <span>Catalogue</span>
+        <span class="example-spacer"></span>
+        <button mat-raised-button [matBadge]="cartQty" matBadgeColor="accent" (click)="drawer.toggle()"  [title]="drawer.opened ? 'Close Cart' : 'Open Cart'">
+            {{drawer.opened ? 'Close' : 'Open'}} Cart
+            <mat-icon>shopping_cart</mat-icon>
+          </button> 
+    </mat-toolbar>
+</ng-container>
+<mat-divider color="accent"></mat-divider>
+<mat-drawer-container class="example-container">
+    <mat-toolbar color="primary">
+        <span>Products</span>
+        <span class="example-spacer"></span>
+        <mat-button-toggle-group #group="matButtonToggleGroup" [value]="listView?'list':'grid'" [title]="listView + ' view'">
+            <mat-button-toggle [title]="'list view'" value="list" aria-label="Text align left" (click)="toggleItemView('list')">
+                <mat-icon>view_list</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle [title]="'grid view'" value="grid" aria-label="Text align center" (click)="toggleItemView('grid')">
+                <mat-icon>grid_view</mat-icon>
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+    </mat-toolbar>
+
+    <mat-spinner *ngIf="isFetchingData" color="accent" diameter="60"></mat-spinner>
+
+    <ng-container *ngIf="!isFetchingData && productList && productList.length > 0">
+        <ng-container *ngIf="listView == 'grid'">
+            <div class="product-container grid">
+                <ng-container *ngFor="let item of productList;">
+                    <div class="card-wrapper">
+                        <mat-card appearance="outlined" class="prod-card">
+                            <mat-card-header>
+                                <mat-card-title [title]="item?.title">{{item?.title}}</mat-card-title>
+                            </mat-card-header>
+                            <img class="prod-image" [src]="item?.thumbnail" height="150px" [title]="item?.title">
+                            <mat-card-content>
+                                <p [title]="item?.description" class="description">{{item?.description}}</p>
+                                <p [title]="item?.price | currency" class="price">{{item?.price | currency }}</p>
+                                <div class="few-qty-in-stock" *ngIf="isFewQtyLeft(item)">Only few quantity left, Hurry up.</div>
+                            </mat-card-content>
+                            <mat-divider></mat-divider>
+                            <mat-card-actions>
+                                <div class="limited-qty" *ngIf="item?.selectedQty >= item?.limitPurchaseQty">Sorry, you can not buy more Quantity.</div>
+                                <div class="actions" [title]="item?.selectedQty" *ngIf="item?.selectedQty > 0">
+                                    <button mat-icon-button *ngIf="item?.selectedQty < item?.limitPurchaseQty" [title]="'add item'" (click)="increaseItemInCart(item)">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                    <span class="selected-qty">{{item?.selectedQty}}</span>
+                                    <button mat-icon-button (click)="reduceItemInCart(item)">
+                                        <mat-icon>remove</mat-icon>
+                                    </button>
+                                </div>
+                                <button mat-raised color="primary" *ngIf="item?.selectedQty == 0 && item?.selectedQty < item?.limitPurchaseQty" [title]="'Add to cart'" mat-flat-button (click)="addToCart(item)">Add to cart
+                                    🛒</button>
+                            </mat-card-actions>
+                        </mat-card>
+                    </div>
+                </ng-container>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="listView == 'list'">
+            <div class="product-container list">
+                <ng-container *ngFor="let item of productList;">
+                    <div class="card-wrapper">
+                        <mat-card appearance="outlined">
+                            <mat-card-header>
+                                <mat-card-title>{{item?.title}}</mat-card-title>
+                            </mat-card-header>
+                            <mat-card-content>
+                                <p class="description">{{item?.description}}</p>
+                                <p class="price">{{item?.price | currency }}</p>
+                                <div class="few-qty-in-stock" *ngIf="isFewQtyLeft(item)">Only few quantity left, Hurry up.</div>
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <div class="limited-qty" *ngIf="item?.selectedQty >= item?.limitPurchaseQty">Sorry, you can not buy more Quantity.</div>
+                                <div class="actions" [title]="item?.selectedQty" *ngIf="item?.selectedQty > 0">
+                                    <button mat-icon-button *ngIf="item?.selectedQty < item?.limitPurchaseQty" [title]="'add item'" (click)="increaseItemInCart(item)">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                    <span class="selected-qty">{{item?.selectedQty}}</span>
+                                    <button mat-icon-button (click)="reduceItemInCart(item)">
+                                        <mat-icon>remove</mat-icon>
+                                    </button>
+                                </div>
+                                <button mat-raised color="primary" *ngIf="item?.selectedQty == 0 && item?.selectedQty < item?.limitPurchaseQty" [title]="'Add to cart'" mat-flat-button (click)="addToCart(item)">Add to cart
+                                    🛒</button>
+                            </mat-card-actions>
+                        </mat-card>
+                    </div>
+                </ng-container>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="productList && productList.length == 0">
+            No Data Found
+        </ng-container>
+    </ng-container>
+
+    <mat-drawer #drawer class="example-sidenav" mode="push" position="end" disableClose="false">
+        <mat-spinner *ngIf="isFetchingData" color="accent" diameter="50"></mat-spinner>
+
+        <ng-container *ngIf="!isFetchingData && userProductList && userProductList.length > 0">
+            <h1 style="padding: 0 5px;">My cart 🛒</h1>
+            <ng-container *ngFor="let cartItem of userProductList; let i = index">
+                <mat-card class="cart-item" appearance="outlined">
+                    <div class="item-description">
+                        <span [title]="cartItem?.title" class="name">{{cartItem?.title}}</span>
+                        <span [title]="cartItem?.price | currency" class="price">{{cartItem?.price | currency}}</span>
+                        <div class="actions" [title]="cartItem?.numberOfItems">
+                            <button mat-icon-button (click)="increaseItemInCart(cartItem)">
+                                <mat-icon>add</mat-icon>
+                            </button>
+                            <span class="selected-qty">{{cartItem?.numberOfItems}}</span>
+                            <button mat-icon-button (click)="reduceItemInCart(cartItem)">
+                                <mat-icon>remove</mat-icon>
+                            </button>
+                            <button mat-icon-button (click)="removeItemFromCart(cartItem)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </mat-card>
+            </ng-container>
+            <div class="final-amount-row" [title]="totalCartAmount | currency">
+                <span class="bold">Total Amount</span>
+                <span class="total-price">{{totalCartAmount | currency}}</span>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="!isFetchingData && userProductList && userProductList.length == 0">
+            <div class="empty-cart">
+                <mat-icon>add_shopping_cart</mat-icon>
+                <p>Cart is Empty</p>
+                <p>Please add product to the cart</p>
+            </div>
+        </ng-container>
+    </mat-drawer>
+</mat-drawer-container>
+
+<router-outlet></router-outlet>
